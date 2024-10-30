@@ -1,111 +1,67 @@
+import 'package:correctflut/presentation/router/app_router.dart';
+import 'package:correctflut/presentation/screens/home_screen.dart';
+import 'package:correctflut/presentation/screens/second_screen.dart';
+import 'package:correctflut/presentation/screens/third_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'Cubit/countercubit_cubit.dart';
+import 'logic/cubit/counter_cubit.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CountercubitCubit(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
 
-  final String title;
+class _MyAppState extends State<MyApp> {
+  final CounterCubit _counterCubit = CounterCubit();
+  final AppRouter appRouter= AppRouter();
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void dispose() {
+    _counterCubit.close();
+    // TODO: implement dispose
+    super.dispose();
   }
 
+  //const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .inversePrimary,
-        title: Text(widget.title),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+
       ),
-      body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
+      onGenerateRoute: appRouter.onGenerateRoute,
+      routes: {
+        '/': (context) => BlocProvider<CounterCubit>.value(
+              value:  _counterCubit,
+              child: HomeScreen(
+                title: 'Home Screen',
+                color: Colors.blue,
               ),
-              BlocConsumer<CountercubitCubit, CountercubitState>(
-                builder: (context, state) {
-                  return Text(
-                    '${state.counterValue}',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headlineMedium,
-                  );
-                },
-               // listener: (BuildContext context, CountercubitState state) {
-                  listener: (context, state) {
-                    // TODO: implement listener
-                    if(state.wasIncremented==true){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Increement'), duration: Duration(milliseconds: 300),));
-                    }else{
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Decreement'), duration: Duration(milliseconds: 300),));
-                    }
-                },
+            ),
+        '/second': (context) => BlocProvider<CounterCubit>.value(
+              value:  _counterCubit,
+              child: SecondScreen(
+                title: 'Second Screen',
+                color: Colors.green,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FloatingActionButton(onPressed: () {
-                    BlocProvider.of<CountercubitCubit>(context).increement();
-                  }, tooltip: "Increment", child: Icon(Icons.add),),
-                  SizedBox(width: 50,),
-
-                  FloatingActionButton(onPressed: () {
-                    BlocProvider.of<CountercubitCubit>(context).decreement();
-                  }, tooltip: "Decrement", child: Icon(Icons.remove,)
-
-                  )
-                ],)
-
-            ],
-          ),
-        ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+            ),
+        '/third': (context) => BlocProvider<CounterCubit>.value(
+              value: _counterCubit,
+              child: ThirdScreen(
+                title: 'Third Screen',
+                color: Colors.red,
+              ),
+            )
+      },
     );
   }
 }
