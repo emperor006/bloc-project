@@ -1,3 +1,5 @@
+import 'package:correctflut/constants/enums.dart';
+import 'package:correctflut/logic/cubit/internetcubit_cubit.dart';
 import 'package:correctflut/presentation/screens/second_screen.dart';
 import 'package:correctflut/presentation/screens/third_screen.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +31,25 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            BlocBuilder<InternetCubit, InternetcubitState>(
+                builder: (context, state) {
+              if (state is InternetConnected &&
+                  state.connectionType == ConnectionType.WIFI) {
+                return const Text('WIFI');
+                ;
+              } else if (state is InternetConnected &&
+                  state.connectionType == ConnectionType.MOBILE) {
+                return const Text('MOBILE');
+              }else if(state is InternetDisconnected){
+                return Container(
+                  child: const Text('Disconnected'),
+                );
+              }else{
+                return CircularProgressIndicator();
+              }
+            }),
+
+        const Text(
               'You have pushed the button this many times:',
             ),
             BlocConsumer<CounterCubit, CounterState>(
@@ -122,7 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 //           ),
                 //         )));
 
-
                 Navigator.of(context).pushNamed('/second');
               },
             ),
@@ -140,8 +159,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 //   '/third',
                 // );
                 Navigator.of(context).pushNamed('/third');
-
-
               },
             ),
           ],
