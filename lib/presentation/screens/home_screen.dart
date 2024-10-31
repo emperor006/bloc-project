@@ -1,7 +1,5 @@
 import 'package:correctflut/constants/enums.dart';
 import 'package:correctflut/logic/cubit/internetcubit_cubit.dart';
-import 'package:correctflut/presentation/screens/second_screen.dart';
-import 'package:correctflut/presentation/screens/third_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,7 +19,14 @@ class _HomeScreenState extends State<HomeScreen> {
   // GlobalKey<ScaffoldState> homeScreenKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+   BlocListener<InternetCubit, InternetcubitState>(
+  listener: (context, state) {
+
+
+
+  },
+  child: Scaffold(
       //key: homeScreenKey,
       appBar: AppBar(
         backgroundColor: widget.color,
@@ -33,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: <Widget>[
             BlocBuilder<InternetCubit, InternetcubitState>(
                 builder: (context, state) {
+
               if (state is InternetConnected &&
                   state.connectionType == ConnectionType.WIFI) {
                 return const Text('WIFI');
@@ -45,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Text('Disconnected'),
                 );
               }else{
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
-            }),
+            },),
 
         const Text(
               'You have pushed the button this many times:',
@@ -55,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
             BlocConsumer<CounterCubit, CounterState>(
               listener: (context, state) {
                 if (state.wasIncremented == true) {
-                  SnackBar(
+                 const  SnackBar(
                     content: Text('Incremented!'),
                     duration: Duration(milliseconds: 300),
                   );
@@ -64,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // );
                 } else if (state.wasIncremented == false) {
                   //homeScreenKey.currentState.showSnackBar();
-                  SnackBar(
+                 const SnackBar(
                     content: Text('Decremented!'),
                     duration: Duration(milliseconds: 300),
                   );
@@ -119,51 +125,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            SizedBox(
+           const SizedBox(
               height: 24,
             ),
             MaterialButton(
               color: Colors.redAccent,
-              child: Text(
+              child: const Text(
                 'Go to Second Screen',
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                // Navigator.of(context).pushNamed(
-                //   '/second',
-                //   arguments: homeScreenKey,
-                // // );
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (_) => BlocProvider<CounterCubit>.value(
-                //           value: BlocProvider.of<CounterCubit>(context),
-                //           child: SecondScreen(
-                //             title: 'Second Screen',
-                //             color: Colors.red,
-                //           ),
-                //         )));
+
 
                 Navigator.of(context).pushNamed('/second');
               },
             ),
-            SizedBox(
+           const  SizedBox(
               height: 24,
             ),
             MaterialButton(
               color: Colors.greenAccent,
-              child: Text(
+              child: const Text(
                 'Go to Third Screen',
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                // Navigator.of(context).pushNamed(
-                //   '/third',
-                // );
                 Navigator.of(context).pushNamed('/third');
               },
             ),
           ],
         ),
       ),
-    );
+    ),
+
+);
   }
 }
